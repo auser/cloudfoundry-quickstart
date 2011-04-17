@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export rvm_trust_rvmrcs_flag=1 # Trust all rmvrcs we find
+
+echo ""
+echo "---------------------------------------------------------"
+echo "CloudFoundry Quickstart"
+echo "---------------------------------------------------------"
+echo ""
+

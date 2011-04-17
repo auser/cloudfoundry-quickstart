@@ -1,0 +1,6 @@
+Quickstart into CloudFoundry
+-------------------------------
+
+Make sure you have <a href="http://www.virtualbox.org/">VirtualBox</a>, rubygems and rvm installed
+    
+    bundle install
