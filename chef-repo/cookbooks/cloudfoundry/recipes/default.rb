@@ -159,33 +159,36 @@ template "/etc/nginx/nginx.conf" do
 end
 
 # This feels like a hack... something is up with vagrant
-directory "#{ENV["HOME"]}/.gem" do
+directory "#{node[:cloudfoundry][:user][:home_dir]}/.gem" do
   owner node[:cloudfoundry][:user][:uid]
   recursive true
   mode 0755
 end
 
 execute "Install bundler to the rvm ruby 1.9.2" do
+  user node[:cloudfoundry][:user][:uid]
   command  <<-CODE
     /bin/bash "/etc/profile.d/rvm.sh"
-    rvm use ruby-1.9.2@global
+    rvm use #{node[:cloudfoundry][:rvm][:default_ruby]}@global
     gem install bundler --no-ri --no-rdoc
   CODE
   not_if "gem list | grep bundler"
 end
 
 # TODO: MAKE THIS PRETTY
-execute "Run env" do
-  user node[:cloudfoundry][:user][:uid]
-  cwd "#{cloudfoundry_dir}/vcap"
-  command "env"
+Dir["#{cloudfoundry_dir}/vcap"].each do |dir|
+  if File.directory?(dir)
+    puts "Directory: #{dir}"
+  end
 end
 execute "Run rake bundler:install in vcap" do
   user node[:cloudfoundry][:user][:uid]
   cwd "#{cloudfoundry_dir}/vcap"
-  command "rvm use ruby-1.9.2@global && rake bundler:install"
+  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]}@global && rake bundler:install"
+  environment('USER' => node[:cloudfoundry][:user][:uid], 'PWD' => "#{cloudfoundry_dir}/vcap", 'HOME' => cloudfoundry_dir)
 end
 
+# This is because we are running as a lower user (kind of a hack)
 directory "/tmp/vcap-run" do
   owner node[:cloudfoundry][:user][:uid]
   group node[:cloudfoundry][:user][:gid]
@@ -195,5 +198,5 @@ end
 execute "Start cloudfoundry" do
   user node[:cloudfoundry][:user][:uid]
   cwd "#{cloudfoundry_dir}/vcap"
-  command "bin/vcap start"
+  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]}@global && bin/vcap start"
 end

@@ -7,7 +7,10 @@
 # All rights reserved - Do Not Redistribute
 #
 
-group 'rvm'
+group 'rvm' do
+  members [node[:cloudfoundry][:user][:uid]]
+  append true
+end
 
 %w(coreutils autoconf curl git-core ruby bison build-essential zlib1g-dev libssl-dev libreadline5-dev).each do |pkg|
   package pkg do
