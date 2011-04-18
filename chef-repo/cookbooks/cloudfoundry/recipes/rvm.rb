@@ -25,6 +25,12 @@ bash "install RVM" do
 end
 cookbook_file "/etc/profile.d/rvm.sh"
 
+file "/etc/profile.d/rvm.sh" do
+  mode 0755
+  owner "root"
+  group "root"
+end
+
 node[:cloudfoundry][:rvm][:rubies].each do |ruby_version|
   bash "install #{ruby_version} with RVM" do
     user "root"

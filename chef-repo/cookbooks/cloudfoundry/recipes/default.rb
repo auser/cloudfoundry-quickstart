@@ -165,16 +165,6 @@ directory "#{node[:cloudfoundry][:user][:home_dir]}/.gem" do
   mode 0755
 end
 
-execute "Install bundler to the rvm ruby 1.9.2" do
-  user node[:cloudfoundry][:user][:uid]
-  command  <<-CODE
-    /bin/bash "/etc/profile.d/rvm.sh"
-    rvm use #{node[:cloudfoundry][:rvm][:default_ruby]}@global
-    gem install bundler --no-ri --no-rdoc
-  CODE
-  not_if "gem list | grep bundler"
-end
-
 # TODO: MAKE THIS PRETTY
 Dir["#{cloudfoundry_dir}/vcap"].each do |dir|
   if File.directory?(dir)
