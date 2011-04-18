@@ -171,11 +171,12 @@ Dir["#{cloudfoundry_dir}/vcap"].each do |dir|
     puts "Directory: #{dir}"
   end
 end
-execute "Run rake bundler:install in vcap" do
+
+script "Run rake bundler:install in vcap" do
+  interpreter "bash"
   user node[:cloudfoundry][:user][:uid]
   cwd "#{cloudfoundry_dir}/vcap"
-  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]}@global && rake bundler:install"
-  environment('USER' => node[:cloudfoundry][:user][:uid], 'PWD' => "#{cloudfoundry_dir}/vcap", 'HOME' => cloudfoundry_dir)
+  code "rake bundler:install"
 end
 
 # This is because we are running as a lower user (kind of a hack)
