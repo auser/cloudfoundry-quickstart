@@ -172,11 +172,17 @@ Dir["#{cloudfoundry_dir}/vcap"].each do |dir|
   end
 end
 
-script "Run rake bundler:install in vcap" do
-  interpreter "bash"
+execute "install bundler in #{node[:cloudfoundry][:rvm][:default_ruby]} the default ruby" do
+  user "root"
+  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && gem install bundler --no-ri --no-rdoc"
+  not_if "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} | gem list | grep 'bundler'"
+end
+
+execute "Run rake bundler:install in vcap" do
   user node[:cloudfoundry][:user][:uid]
   cwd "#{cloudfoundry_dir}/vcap"
-  code "rake bundler:install"
+  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && rake bundler:install"
+  action :run
 end
 
 # This is because we are running as a lower user (kind of a hack)
@@ -189,5 +195,5 @@ end
 execute "Start cloudfoundry" do
   user node[:cloudfoundry][:user][:uid]
   cwd "#{cloudfoundry_dir}/vcap"
-  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]}@global && bin/vcap start"
+  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && bin/vcap start"
 end
