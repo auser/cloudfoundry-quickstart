@@ -174,6 +174,7 @@ end
 
 execute "install bundler in #{node[:cloudfoundry][:rvm][:default_ruby]} the default ruby" do
   user "root"
+  group 'rvm'
   command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && gem install bundler --no-ri --no-rdoc"
   not_if "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} | gem list | grep 'bundler'"
 end
@@ -181,7 +182,10 @@ end
 execute "Run rake bundler:install in vcap" do
   user node[:cloudfoundry][:user][:uid]
   cwd "#{cloudfoundry_dir}/vcap"
-  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && rake bundler:install"
+  command <<-EOE
+  [[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rvm"  # This loads RVM into a shell session.
+  rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && rake bundler:install
+  EOE
   action :run
 end
 
