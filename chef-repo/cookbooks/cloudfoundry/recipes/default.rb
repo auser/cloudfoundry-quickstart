@@ -180,12 +180,9 @@ execute "install bundler in #{node[:cloudfoundry][:rvm][:default_ruby]} the defa
 end
 
 execute "Run rake bundler:install in vcap" do
-  user node[:cloudfoundry][:user][:uid]
+  user "root"
   cwd "#{cloudfoundry_dir}/vcap"
-  command <<-EOE
-  [[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rvm"  # This loads RVM into a shell session.
-  rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && rake bundler:install
-  EOE
+  command "rvm use #{node[:cloudfoundry][:rvm][:default_ruby]} && rake bundler:install"
   action :run
 end
 
