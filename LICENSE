@@ -1,15 +1,3 @@
-Quickstart into CloudFoundry
--------------------------------
-
-Make sure you have <a href="http://www.virtualbox.org/">VirtualBox</a>, rubygems and rvm installed
-    
-    bundle install
-    
-License and Author
-==================
-
-Author:: Ari Lerner (<arilerner@mac.com>)
-
 Copyright 2011 Ari Lerner
 
 Licensed under the Apache License, Version 2.0 (the "License");

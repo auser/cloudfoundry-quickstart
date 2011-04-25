@@ -4,7 +4,7 @@
 #
 # Copyright 2011, Ari Lerner
 #
-# All rights reserved - Do Not Redistribute
+# All rights reserved under license terms
 #
 
 require 'digest/md5'
