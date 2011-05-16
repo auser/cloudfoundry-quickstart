@@ -46,7 +46,7 @@ Vagrant::Config.run do |config|
     chef.roles_path = 'chef-repo/roles'
     chef.cookbooks_path = 'chef-repo/cookbooks'
     chef.add_role 'cloudfoundry'
-    chef.json.merge!({:mysql => {:server_root_password => Digest::MD5.hexdigest("MyVagrantServer")}})
+    chef.json.merge!({:mysql => {:server_root_password => Digest::MD5.hexdigest("MyVagrantServer"), :bind_address => "127.0.0.1"}})
   end
   config.ssh.forward_agent = true
 
